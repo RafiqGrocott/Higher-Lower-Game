@@ -65,18 +65,6 @@ def check_rounds():
         return response
 
 
-# Lists of valid responses
-yes_no_list = ["yes", "no"]
-
-
-# Ask user for # of rounds then loop...
-rounds_played = 0
-rounds_lost = 0
-
-game_summary = []
-
-mode = "regular"
-
 # Number checking function goes here
 def intcheck(question, low=None, high=None, exit_code = None):
 
@@ -120,6 +108,12 @@ def intcheck(question, low=None, high=None, exit_code = None):
             continue
         
 
+# Lists of valid responses
+yes_no_list = ["yes", "no"]
+game_summary = []
+
+mode = "regular"
+
 # ***** Main Routine *****
 print("Welcome to the higher lower game")
 print()
@@ -134,6 +128,10 @@ if played_before == "no":
 
 #ask user for number of rounds <enter> for infinite mode
 
+# Ask user for # of rounds, <enter> for infinite mode
+rounds_played = 0
+rounds_lost = 0
+
 # ask for low number
 # checks that response is a integer
 low_num = intcheck("Low Number: ")
@@ -145,10 +143,11 @@ print("You chose a low number of ", low_num)
 high_num = intcheck("High Number: ", low_num + 1)
 print("You chose a high number of ", high_num)
 
-
-
-# Ask user for # of rounds, <enter> for infinite mode
-rounds_played = 0
+range = high_num - low_num + 1
+max_raw = math.log2(range)
+max_upped = math.ceil(max_raw)
+max_guesses = max_upped = 1
+print("Max Guesses: {}".format(max_guesses))
 
 rounds = check_rounds()
 
@@ -158,6 +157,8 @@ if rounds == "":
 
 end_game = "no"
 while end_game == "no":
+
+    numbers_guessed = []
 
     # Rounds Heading
     print()
@@ -171,6 +172,8 @@ while end_game == "no":
     print(heading)
 
     guess = ""
+    
+    secret = random.randint(low_num, high_num)
     while guess != secret: 
 
         guess_instruction = "Guess a number between {} and {}: ".format(low_num, high_num)
@@ -179,16 +182,22 @@ while end_game == "no":
         if guess == "xxx":
             end_game = "yes"
             break
+        
+        if guess in numbers_guessed:
+            print("you already guessed this")
+            continue
 
-    numbers_guessed = []
+        if guess not in numbers_guessed:
+            numbers_guessed.append(secret)
 
-    secret = random.randint(low_num, high_num)
+        if guess == secret:
+            print("You got it!!!")
+        
+        if guess < secret:
+            print("too low")
+        elif guess > secret:
+            print("too high")
 
-    range = high_num - low_num + 1
-    max_raw = math.log2(range)
-    max_upped = math.ceil(max_raw)
-    max_guesses = max_upped =1
-    print("Max Guesses: {}".format(max_guesses))
     rounds_played += 1
 
     # End game if requested # of rounds has been played
